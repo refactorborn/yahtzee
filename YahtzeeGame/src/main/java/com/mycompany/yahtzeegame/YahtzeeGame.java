@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.yahtzeespel;
+package com.mycompany.yahtzeegame;
 
 import javax.swing.JOptionPane;
 
@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
  * @author Gebruiker
  */
 
-public class Yahtzeespel {
+public class YahtzeeGame {
 
     public static void main(String[] args) {
         int players = getPlayers();
@@ -21,11 +21,11 @@ public class Yahtzeespel {
     }
 
     private static int getPlayers() {
-        String s = JOptionPane.showInputDialog("Voer het gewenst aantal spelers in.");
+        String s = JOptionPane.showInputDialog("Insert the amount of players.");
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) { // De Integer.parseInt(s) is mislukt.
-            System.out.println("Helaas '" + s + "' is geen hoeveelheid spelers. sukkel!");
+            System.out.println("Sorry '" + s + "' is not an amount of players!");
             return getPlayers();
         } 
     }
