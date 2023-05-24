@@ -5,7 +5,6 @@
 package com.mycompany.yahtzeegame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -51,31 +50,26 @@ public class YahtzeeGame {
 
     public static void doPlayerRound(Player aPlayer) {
         System.out.println("The round of player: "+ (aPlayer.name));
-        ArrayList<Integer> diceFromRound = new ArrayList();
+        ArrayList<Integer> lastRole = new ArrayList();
         int roleAmount = 5;
         for (int dice_throw=0; dice_throw<3; dice_throw++){
             ArrayList<Integer> rollResult = roleDice(roleAmount);
             
-            if (dice_throw == 0){
-                diceFromRound.addAll(chooseDice(rollResult, diceFromRound));
-                roleAmount -= diceFromRound.size();
-                System.out.println(diceFromRound);
-                System.out.println(roleAmount);
-            }
-            
-            else if (dice_throw == 1){
-                diceFromRound.addAll(chooseDice(rollResult, diceFromRound));
-                System.out.println(diceFromRound);
-                diceFromRound = chooseDice2Reroll(diceFromRound);
-                roleAmount = 5 - diceFromRound.size();
-                System.out.println(diceFromRound);
-                System.out.println(roleAmount);
-            }
-            
-            else {
-                diceFromRound.addAll(rollResult);
-                System.out.println(diceFromRound);
-//                chooseScore();
+            switch (dice_throw) {
+                case 0 -> {
+                    lastRole.addAll(chooseDice(rollResult, lastRole));
+                    roleAmount -= lastRole.size();
+                }
+                case 1 -> {
+                    lastRole.addAll(chooseDice(rollResult, lastRole));
+                    lastRole = chooseDice2Reroll(lastRole);
+                    roleAmount = 5 - lastRole.size();
+                }
+                default -> {
+                    lastRole.addAll(rollResult);
+                    System.out.println(lastRole);
+                    aPlayer.scoreCard.chooseScore(lastRole);
+                }
             }
         }
     }
@@ -127,12 +121,11 @@ public class YahtzeeGame {
                 char[] diceArray = s.toCharArray();
         ArrayList<Integer> diceKept = new ArrayList();
         for (int i = 0; i<diceFromRound.size();i++){
-            if (diceArray[i] == '+'){
+            if (diceArray[i] == '-'){
                 diceKept.add(diceFromRound.get(i));
             } 
         }
         return diceKept;
-
     }
 
     private static String inputChooseDice2Reroll(ArrayList<Integer> diceFromRound) {
