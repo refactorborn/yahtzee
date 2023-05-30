@@ -40,7 +40,7 @@ public class YahtzeeGame {
     }
 
     public static void playGame(Player[] players) {
-        for (int i = 0; i<2; i++){
+        for (int i = 0; i<13; i++){
             System.out.println("Ronde " + (i + 1));
             for (Player aPlayer: players) {
                 doPlayerRound(aPlayer);
