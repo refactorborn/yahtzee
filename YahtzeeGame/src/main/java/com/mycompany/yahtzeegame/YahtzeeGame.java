@@ -31,6 +31,7 @@ public class YahtzeeGame {
     
     private static int inputAmountPlayers() {
         String s = JOptionPane.showInputDialog("Insert the amount of players.");
+        if (s == null) return 0;  // Als op cancel gedrukt is: stoppen.
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) { // De Integer.parseInt(s) is mislukt.

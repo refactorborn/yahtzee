@@ -24,7 +24,7 @@ public class ScoreCard {
     }
     
     public int getScore(ScoreField field) {
-        return scores.getOrDefault(field, 0);
+        return scores.getOrDefault(field, -1);
     }
 
     public void setScore(ScoreField field, int score) {
@@ -67,49 +67,56 @@ public class ScoreCard {
         int[][] bigStreets = {{1,2,3,4,5},{2,3,4,5,6}};
         for (int key : scoreFrequency.keySet()){
             throwTotal += scoreFrequency.get(key) * key;             
-            if (key == 1 && getScore(ONE) == 0){
-                possibleScoreChoices.add("ONES:" + scoreFrequency.get(key) * key);
+            if (key == 1 && getScore(ONE) == -1){
+                possibleScoreChoices.add("ONE:" + scoreFrequency.get(key) * key);
             }
-            if (key == 2 && getScore(TWO) == 0){
-                possibleScoreChoices.add("TWOS:" + scoreFrequency.get(key) * key);
+            if (key == 2 && getScore(TWO) == -1){
+                possibleScoreChoices.add("TWO:" + scoreFrequency.get(key) * key);
             }
-            if (key == 3 && getScore(THREE) == 0){
-                possibleScoreChoices.add("THREES:" + scoreFrequency.get(key) * key);
+            if (key == 3 && getScore(THREE) == -1){
+                possibleScoreChoices.add("THREE:" + scoreFrequency.get(key) * key);
             }
-            if (key == 4 && getScore(FOUR) == 0){
-                possibleScoreChoices.add("FOURS:" + scoreFrequency.get(key) * key);
+            if (key == 4 && getScore(FOUR) == -1){
+                possibleScoreChoices.add("FOUR:" + scoreFrequency.get(key) * key);
             }
-            if (key == 5 && getScore(FIVE) == 0){
-                possibleScoreChoices.add("FIVES:" + scoreFrequency.get(key) * key);
+            if (key == 5 && getScore(FIVE) == -1){
+                possibleScoreChoices.add("FIVE:" + scoreFrequency.get(key) * key);
             }
-            if (key == 6 && getScore(SIX) == 0){
-                possibleScoreChoices.add("SIXES:" + scoreFrequency.get(key) * key);
+            if (key == 6 && getScore(SIX) == -1){
+                possibleScoreChoices.add("SIX:" + scoreFrequency.get(key) * key);
             }
         }
         for (int[] littleStreet : littleStreets) {
-            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LITTLE_STREET) == 0) {
+            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LITTLE_STREET) == -1) {
                 possibleScoreChoices.add("LS:30");
             }
         }
         for (int[] bigStreet : bigStreets){
-            if (containsAllNumbers(scoreFrequency, bigStreet) && getScore(BIG_STREET) == 0){
+            if (containsAllNumbers(scoreFrequency, bigStreet) && getScore(BIG_STREET) == -1){
                 possibleScoreChoices.add("BS:40");
             }
         }    
-        if (scoreFrequency.values().contains(3) && getScore(THREE_OF_A_KIND) == 0){
+        if (scoreFrequency.values().contains(3) && getScore(THREE_OF_A_KIND) == -1){
             possibleScoreChoices.add("ToaK:" + throwTotal);
         }
-        if (scoreFrequency.values().contains(4) && getScore(FOUR_OF_A_KIND) == 0){
+        if (scoreFrequency.values().contains(4) && getScore(FOUR_OF_A_KIND) == -1){
                 possibleScoreChoices.add("FoaK:" + throwTotal);            
         }
-        if (getScore(CHANCE) == 0) {
-            possibleScoreChoices.add("Chance:" + throwTotal);
+        if (getScore(CHANCE) == -1) {
+            possibleScoreChoices.add("CHANCE:" + throwTotal);
         }
-        if (scoreFrequency.values().contains(2) && scoreFrequency.values().contains(3) && getScore(FULL_HOUSE) == 0){
+        if (scoreFrequency.values().contains(2) && scoreFrequency.values().contains(3) && getScore(FULL_HOUSE) == -1){
             possibleScoreChoices.add("FH:25");
         }
-        if (scoreFrequency.values().contains(5) && getScore(YAHTZEE) == 0){
-            possibleScoreChoices.add("Yahtzee:50");
+        if (scoreFrequency.values().contains(5) && getScore(YAHTZEE) == -1){
+            possibleScoreChoices.add("YAHTZEE:50");
+        }
+        if (possibleScoreChoices == null){
+            for (ScoreField score : ScoreField.values()){
+                if (getScore(score) == -1){
+                    possibleScoreChoices.add("" + score + ":0");
+                }
+            }
         }
         return possibleScoreChoices;
     }
@@ -124,8 +131,8 @@ public class ScoreCard {
     }
     
     private String inputChooseScoreGUI(ArrayList<Integer> finalDiceRound, ArrayList<String> possibleScorefields) {
-        String s = JOptionPane.showInputDialog("U heeft gegooid: " + 
-            finalDiceRound.toString() + ". U kunt de volgende opties kiezen om op uw scorekaart te zetten:" 
+        String s = JOptionPane.showInputDialog("You have thrown: " + 
+            finalDiceRound.toString() + ". You can choose from the following options using +-:" 
             + possibleScorefields
         );
         if (s == null) {
@@ -151,55 +158,55 @@ public class ScoreCard {
     private void appendScoreCard(String s) {
         System.out.println(s);
         String[] sSplit = s.strip().split(":");
-        if (sSplit[0].contains("ONES")){
+        if (sSplit[0].contains("ONE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(ONE,i);
         }
-        else if (sSplit[0].contains("TWOS")){
+        else if (sSplit[0].contains("TWO")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(TWO,i);
         }
-        else if (sSplit[0].contains("THREES")){
+        else if (sSplit[0].contains("THREE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(THREE,i);
         }
-        else if (sSplit[0].contains("FOURS")){
+        else if (sSplit[0].contains("FOUR")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(FOUR,i);
         }
-        else if (sSplit[0].contains("FIVES")){
+        else if (sSplit[0].contains("FIVE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(FIVE,i);
         }
-        else if (sSplit[0].contains("SIXES")){
+        else if (sSplit[0].contains("SIX")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(SIX,i);
         }
-                else if (sSplit[0].contains("LS")){
+                else if (sSplit[0].contains("LS")|| sSplit[0].contains("LITTLE_STREET")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(LITTLE_STREET,i);
         }
-        else if (sSplit[0].contains("BS")){
+        else if (sSplit[0].contains("BS") || sSplit[0].contains("BIG_STREET")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(BIG_STREET,i);
         }
-        else if (sSplit[0].contains("ToaK")){
+        else if (sSplit[0].contains("ToaK") || sSplit[0].contains("THREE_OF_A_KIND")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(THREE_OF_A_KIND,i);
         }
-        else if (sSplit[0].contains("FoaK")){
+        else if (sSplit[0].contains("FoaK") || sSplit[0].contains("FOUR_OF_A_KIND")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(FOUR_OF_A_KIND,i);
         }
-        else if (sSplit[0].contains("FH")){
+        else if (sSplit[0].contains("FH") || sSplit[0].contains("FULL_HOUSE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(FULL_HOUSE,i);
         }
-    else if (sSplit[0].contains("Chance")){
+    else if (sSplit[0].contains("CHANCE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(CHANCE,i);
         }
-    else if (sSplit[0].contains("Yahtzee")){
+    else if (sSplit[0].contains("YAHTZEE")){
             int i = Integer.parseInt(sSplit[1]);
             setScore(YAHTZEE,i);
         }
