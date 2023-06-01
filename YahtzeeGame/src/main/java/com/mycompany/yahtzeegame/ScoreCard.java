@@ -45,7 +45,6 @@ public class ScoreCard {
 
     public void chooseScore(ArrayList<Integer> finalDiceRound) {
         HashMap<Integer, Integer> ScoreFrequency = storeScoreFrequency(finalDiceRound);
-        System.out.println(checkPossibleScorefields(ScoreFrequency).toString());
         ArrayList<String> possibleScorefields = checkPossibleScorefields(ScoreFrequency);
         String choice = makeChoice(finalDiceRound, possibleScorefields);
         appendScoreCard(choice);
@@ -80,7 +79,7 @@ public class ScoreCard {
             }
         }
         for (int[] littleStreet : littleStreets) {
-            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LSTR) == -1) {
+            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LSTR) == -1 && !possibleScoreChoices.contains("LSTR:30")) {
                 possibleScoreChoices.add("LSTR:30");
             }
         }
@@ -109,7 +108,7 @@ public class ScoreCard {
                 if (getScore(score) == -1){
                     possibleScoreChoices.add("" + score + ":0");
                 }
-            }
+            } 
         }
         return possibleScoreChoices;
     }
@@ -123,15 +122,32 @@ public class ScoreCard {
         return true;
     }
     
+        private String makeChoice(ArrayList<Integer> finalDiceRound, ArrayList<String> possibleScorefields){
+        String scoreInput = inputChooseScoreGUI(finalDiceRound, possibleScorefields);
+        char[] ca = scoreInput.toCharArray();
+        int numPlusses = 0;
+        String fields = null;
+        for (int i = 0; i<ca.length;i++){
+            if (ca[i] == '+'){
+                numPlusses += 1;
+                if (numPlusses > 1){
+                    System.out.println("You chose more then one scorefield.");
+                    System.out.println("Please choose one.");
+                    return makeChoice(finalDiceRound, possibleScorefields);
+                }
+                fields = possibleScorefields.get(i);
+            } 
+        }
+        return fields;
+    }
+
     //add sout for the else if and check +-'s
     private String inputChooseScoreGUI(ArrayList<Integer> finalDiceRound, ArrayList<String> possibleScorefields) {
         String s = JOptionPane.showInputDialog("You have saved: " + 
             finalDiceRound.toString() + " dice. You can choose from the following options using +-:" 
             + possibleScorefields
         );
-        if (s == null) {
-            return null;
-        }  // Als op cancel gedrukt is: stoppen.
+        if (s == null) return null;  // Als op cancel gedrukt is: stoppen.
         else if (s.length() != possibleScorefields.size()){
             System.out.println("length answer does not equal the amount of dice rolled");
             return inputChooseScoreGUI(finalDiceRound, possibleScorefields);
@@ -139,22 +155,11 @@ public class ScoreCard {
         return s;
     }
     
-    private String makeChoice(ArrayList<Integer> finalDiceRound, ArrayList<String> possibleScorefields){
-        String s = inputChooseScoreGUI(finalDiceRound, possibleScorefields);
-        char[] ca = s.toCharArray();
-        for (int i = 0; i<ca.length;i++){
-            if (ca[i] == '+'){
-                return possibleScorefields.get(i);
-            } 
-        }
-        return null;
-    }
-
-    private void appendScoreCard(String s) {
-        String[] sSplit = s.strip().split(":");
-        ScoreField field = getScoreFieldFromString(sSplit[0]);
+    private void appendScoreCard(String stringField) {
+        String[] stringFieldSplit = stringField.strip().split(":");
+        ScoreField field = getScoreFieldFromString(stringFieldSplit[0]);
         if (field != null) {
-            int i = Integer.parseInt(sSplit[1]);
+            int i = Integer.parseInt(stringFieldSplit[1]);
             setScore(field, i);
         }
     }
@@ -168,6 +173,7 @@ public class ScoreCard {
         }
         return null;
     }
+    
     public void calculateTotalScores() {
         int scoreTotal = 0;
         for(ScoreField field : ScoreField.values())
@@ -175,7 +181,5 @@ public class ScoreCard {
                 scoreTotal += getScore(field);
                 setTotalScore(scoreTotal);
                 }
-        
     }
-
 }
