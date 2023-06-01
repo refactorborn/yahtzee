@@ -14,6 +14,10 @@ import javax.swing.JOptionPane;
 
 public class YahtzeeGame {
     
+    //add a way to customize amount of rounds
+    //add a way to print the results
+    //add a way to add player names
+    //add a way to stop game early
     public static void main(String[] args) {
         Player[] players = getPlayers();
         //System.out.println(Arrays.toString(players));
@@ -51,25 +55,35 @@ public class YahtzeeGame {
 
     public static void doPlayerRound(Player aPlayer) {
         System.out.println("The round of player: "+ (aPlayer.name));
-        ArrayList<Integer> lastRole = new ArrayList();
+        ArrayList<Integer> savedDice = new ArrayList();
         int roleAmount = 5;
         for (int dice_throw=0; dice_throw<3; dice_throw++){
             ArrayList<Integer> rollResult = roleDice(roleAmount);
             
             switch (dice_throw) {
                 case 0 -> {
-                    lastRole.addAll(chooseDice(rollResult, lastRole));
-                    roleAmount -= lastRole.size();
+                    String textGui = "You have thrown: " + 
+                rollResult.toString() + " which dice would you like to save?" +
+                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+                    savedDice.addAll(chooseDice(textGui,rollResult));
+                    roleAmount -= savedDice.size();
                 }
                 case 1 -> {
-                    lastRole.addAll(chooseDice(rollResult, lastRole));
-                    lastRole = chooseDice2Reroll(lastRole);
-                    roleAmount = 5 - lastRole.size();
+                    String textGui = "You have thrown: " + 
+                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
+                            + "\n Which dice do you want to keep?" +
+                             "\n\nExample -++-- only keeps dice 2 and 3 while "
+                            + "it would thrown dice 1, 4 and 5 again.";
+                    savedDice.addAll(chooseDice(textGui, rollResult));
+                    textGui = "You have saved these dice in round 1 and 2: " + 
+                savedDice.toString() + " which dice would you like to role again?" +
+                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+                    savedDice = chooseDice(textGui, savedDice);
+                    roleAmount = 5 - savedDice.size();
                 }
                 default -> {
-                    lastRole.addAll(rollResult);
-                    System.out.println(lastRole);
-                    aPlayer.scoreCard.chooseScore(lastRole);
+                    savedDice.addAll(rollResult);
+                    aPlayer.scoreCard.chooseScore(savedDice);
                 }
             }
         }
@@ -86,56 +100,25 @@ public class YahtzeeGame {
         return roleArray;
     }  
 
-    private static ArrayList<Integer> chooseDice(ArrayList<Integer> rollResult, ArrayList<Integer> diceFromRound) {
-        String s = inputChooseDice(rollResult, diceFromRound);
+    private static ArrayList<Integer> chooseDice(String textGui, ArrayList<Integer> dice) {
+        String s = diceChooserGUI(textGui, dice);
         char[] diceArray = s.toCharArray();
         ArrayList<Integer> roundResults = new ArrayList();
-        for (int i = 0; i<rollResult.size();i++){
+        for (int i = 0; i<dice.size();i++){
             if (diceArray[i] == '+'){
-                roundResults.add(rollResult.get(i));
+                roundResults.add(dice.get(i));
             } 
         }
         return roundResults;
     }
-
-    private static String inputChooseDice(ArrayList<Integer> rollResult, ArrayList<Integer> diceFromRound) {
-        if (diceFromRound.isEmpty()){
-            String s = JOptionPane.showInputDialog("U heeft gegooid: " + 
-                rollResult.toString() + " welke worp/worpen wilt u houden?" +
-                "\n\nBijvoorbeeld -++-- houdt alleen dobbelsteen 2 en 3 vast, 1, 4 en 5 gooit dan opnieuw."
-            );
-            if (s == null) return null;  // Als op cancel gedrukt is: stoppen.
-            return s;
-        } else {
-            String s = JOptionPane.showInputDialog("U heeft gegooid: " + 
-                rollResult.toString() + ".\nVorige ronde heeft u gegooid: " + diceFromRound.toString() + ".\n Welke worp/worpen wilt u houden?" +
-                "\n\nBijvoorbeeld -++-- houdt alleen dobbelsteen 2 en 3 vast, 1, 4 en 5 gooit dan opnieuw."
-            );
-            if (s == null) return null;  // Als op cancel gedrukt is: stoppen.
-            return s;
-
+        private static String diceChooserGUI(String textGui, ArrayList<Integer> diceThrow){
+        String answer = JOptionPane.showInputDialog(textGui);
+        if (answer == null) return null;
+        else if (answer.length() != diceThrow.size()) {
+            System.out.println("length answer does not equal the amount of dice rolled");
+            return diceChooserGUI(textGui,diceThrow);
         }
-    }
-
-    private static ArrayList<Integer> chooseDice2Reroll(ArrayList<Integer> diceFromRound) {
-        String s = inputChooseDice2Reroll(diceFromRound);
-                char[] diceArray = s.toCharArray();
-        ArrayList<Integer> diceKept = new ArrayList();
-        for (int i = 0; i<diceFromRound.size();i++){
-            if (diceArray[i] == '-'){
-                diceKept.add(diceFromRound.get(i));
-            } 
-        }
-        return diceKept;
-    }
-
-    private static String inputChooseDice2Reroll(ArrayList<Integer> diceFromRound) {
-        String s = JOptionPane.showInputDialog("U heeft deze dobbelstenen opzij gelegd: " + 
-                diceFromRound.toString() + " welke worp/worpen wilt opnieuw rollen?" +
-                "\n\nBijvoorbeeld -++-- houdt alleen dobbelsteen 2 en 3 vast, 1, 4 en 5 gooit dan opnieuw."
-            );
-            if (s == null) return null;  // Als op cancel gedrukt is: stoppen.
-            return s;
+        return answer;
     }
 }
 
