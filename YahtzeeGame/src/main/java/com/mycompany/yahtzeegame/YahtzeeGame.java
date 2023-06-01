@@ -20,6 +20,7 @@ public class YahtzeeGame {
     //add a way to add player names
     //add a way to stop game early
     public static void main(String[] args) {
+        System.out.println("Welcome to this game of Yahtzee!");
         Player[] players = getPlayers();
         //System.out.println(Arrays.toString(players));
         playGame(players);
@@ -29,7 +30,7 @@ public class YahtzeeGame {
         int playerAmount = inputAmountPlayers();
         Player players[] = new Player[playerAmount];
         for (int i=0; i<playerAmount; i++){
-            players[i] = new Player(i);
+            players[i] = new Player("" + (i + 1));
         }
         return players;
     }
@@ -46,7 +47,7 @@ public class YahtzeeGame {
     }
 
     public static void playGame(Player[] players) {
-        for (int i = 0; i<1; i++){
+        for (int i = 0; i<2; i++){
             System.out.println("Ronde " + (i + 1));
             for (Player aPlayer: players) {
                 doPlayerRound(aPlayer);
@@ -72,17 +73,19 @@ public class YahtzeeGame {
                     roleAmount -= savedDice.size();
                 }
                 case 1 -> {
-                    String textGui = "You have thrown: " + 
-                            rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
-                            + "\n Which dice do you want to keep?" +
-                             "\n\nExample -++-- only keeps dice 2 and 3 while "
-                            + "it would thrown dice 1, 4 and 5 again.";
-                    savedDice.addAll(chooseDice(textGui, rollResult));
-                    textGui = "You have saved these dice in round 1 and 2: " + 
-                        savedDice.toString() + " which dice would you like to role again?" +
-                        "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
-                    savedDice = chooseDice(textGui, savedDice);
-                    roleAmount = 5 - savedDice.size();
+                    if (roleAmount != 0){
+                        String textGui = "You have thrown: " + 
+                                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
+                                + "\n Which dice do you want to keep?" +
+                                 "\n\nExample -++-- only keeps dice 2 and 3 while "
+                                + "it would thrown dice 1, 4 and 5 again.";
+                        savedDice.addAll(chooseDice(textGui, rollResult));
+                        textGui = "You have saved these dice in round 1 and 2: " + 
+                            savedDice.toString() + " which dice would you like to role again?" +
+                            "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+                        savedDice = chooseDice(textGui, savedDice);
+                        roleAmount = 5 - savedDice.size();
+                    }
                 }
                 default -> {
                     savedDice.addAll(rollResult);

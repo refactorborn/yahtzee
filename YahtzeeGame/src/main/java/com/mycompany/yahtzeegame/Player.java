@@ -9,10 +9,10 @@ package com.mycompany.yahtzeegame;
  * @author Gebruiker
  */
 public class Player {
-    public int name;
+    public String name;
     public ScoreCard scoreCard;
 
-    public Player(int name) {
+    public Player(String name) {
         this.name = name;
         this.scoreCard = new ScoreCard();
     }

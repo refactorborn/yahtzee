@@ -104,7 +104,7 @@ public class ScoreCard {
         if (scoreFrequency.values().contains(5) && getScore(YAHTZEE) == -1){
             possibleScoreChoices.add("YAHTZEE:50");
         }
-        if (possibleScoreChoices == null){
+        if (possibleScoreChoices.isEmpty()){
             for (ScoreField score : ScoreField.values()){
                 if (getScore(score) == -1){
                     possibleScoreChoices.add("" + score + ":0");
@@ -125,8 +125,8 @@ public class ScoreCard {
     
     //add sout for the else if and check +-'s
     private String inputChooseScoreGUI(ArrayList<Integer> finalDiceRound, ArrayList<String> possibleScorefields) {
-        String s = JOptionPane.showInputDialog("You have thrown: " + 
-            finalDiceRound.toString() + ". You can choose from the following options using +-:" 
+        String s = JOptionPane.showInputDialog("You have saved: " + 
+            finalDiceRound.toString() + " dice. You can choose from the following options using +-:" 
             + possibleScorefields
         );
         if (s == null) {
