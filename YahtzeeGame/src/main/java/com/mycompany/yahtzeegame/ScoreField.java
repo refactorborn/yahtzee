@@ -9,6 +9,6 @@ package com.mycompany.yahtzeegame;
  * @author Gebruiker
  */
 public enum ScoreField {
-    ONE, TWO, THREE, FOUR, FIVE, SIX, LITTLE_STREET, BIG_STREET, THREE_OF_A_KIND,
-    FOUR_OF_A_KIND, FULL_HOUSE, YAHTZEE, CHANCE
+    ONE, TWO, THREE, FOUR, FIVE, SIX, LSTR, BSTR, TOAK,
+    FOAK, FULLH, YAHTZEE, CHANCE
 }
