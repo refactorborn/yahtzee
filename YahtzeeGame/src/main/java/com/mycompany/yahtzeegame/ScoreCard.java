@@ -79,7 +79,8 @@ public class ScoreCard {
             }
         }
         for (int[] littleStreet : littleStreets) {
-            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LSTR) == -1 && !possibleScoreChoices.contains("LSTR:30")) {
+            if (containsAllNumbers(scoreFrequency, littleStreet) && getScore(LSTR) == -1 &&
+                    !possibleScoreChoices.contains("LSTR:30")) {
                 possibleScoreChoices.add("LSTR:30");
             }
         }
@@ -88,16 +89,19 @@ public class ScoreCard {
                 possibleScoreChoices.add("BSTR:40");
             }
         }    
-        if (scoreFrequency.values().contains(3) && getScore(TOAK) == -1){
+        if (scoreFrequency.values().contains(3) || scoreFrequency.values().contains(4) || 
+                scoreFrequency.values().contains(5) && getScore(TOAK) == -1){
             possibleScoreChoices.add("TOAK:" + throwTotal);
         }
-        if (scoreFrequency.values().contains(4) && getScore(FOAK) == -1){
+        if (scoreFrequency.values().contains(4) || scoreFrequency.values().contains(5) &&
+                getScore(FOAK) == -1){
                 possibleScoreChoices.add("FOAK:" + throwTotal);            
         }
         if (getScore(CHANCE) == -1) {
             possibleScoreChoices.add("CHANCE:" + throwTotal);
         }
-        if (scoreFrequency.values().contains(2) && scoreFrequency.values().contains(3) && getScore(FULLH) == -1){
+        if (scoreFrequency.values().contains(2) && scoreFrequency.values().contains(3) && 
+                getScore(FULLH) == -1){
             possibleScoreChoices.add("FULLH:25");
         }
         if (scoreFrequency.values().contains(5) && getScore(YAHTZEE) == -1){

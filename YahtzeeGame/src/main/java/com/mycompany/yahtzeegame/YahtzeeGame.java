@@ -31,11 +31,11 @@ public class YahtzeeGame {
     }
     
     private static int getRoundAmount() {
-            String s = JOptionPane.showInputDialog("Insert the amount of rounds. The maximum amount is 12.");
+            String s = JOptionPane.showInputDialog("Insert the amount of rounds. The maximum amount is 13.");
         if (s == null) return 0;  // Als op cancel gedrukt is: stoppen.
         try {
             int rounds = Integer.parseInt(s);
-            if (rounds > 12){
+            if (rounds > 13){
                 System.out.println("Sorry '" + s + "' is over the maximum of 12 rounds!");
                 return getRoundAmount(); 
             }
