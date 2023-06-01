@@ -15,15 +15,10 @@ import javax.swing.JOptionPane;
 
 public class YahtzeeGame {
     
-    //add a way to customize amount of rounds
-    //add a way to print the results
-    //add a way to add player names
-    //add a way to stop game early
     public static void main(String[] args) {
-        System.out.println("Welcome to this game of Yahtzee!");
         Player[] players = getPlayers();
-        //System.out.println(Arrays.toString(players));
-        playGame(players);
+        int amountRounds = getRoundAmount();
+        playGame(players, amountRounds);
     }
 
     private static Player[] getPlayers() {
@@ -33,6 +28,22 @@ public class YahtzeeGame {
             players[i] = new Player("" + (i + 1));
         }
         return players;
+    }
+    
+    private static int getRoundAmount() {
+            String s = JOptionPane.showInputDialog("Insert the amount of rounds. The maximum amount is 12.");
+        if (s == null) return 0;  // Als op cancel gedrukt is: stoppen.
+        try {
+            int rounds = Integer.parseInt(s);
+            if (rounds > 12){
+                System.out.println("Sorry '" + s + "' is over the maximum of 12 rounds!");
+                return getRoundAmount(); 
+            }
+            return rounds;
+        } catch (NumberFormatException e) { // De Integer.parseInt(s) is mislukt.
+            System.out.println("Sorry '" + s + "' is over the maximum of 12 rounds!");
+            return getRoundAmount();
+        } 
     }
     
     private static int inputAmountPlayers() {
@@ -46,8 +57,9 @@ public class YahtzeeGame {
         } 
     }
 
-    public static void playGame(Player[] players) {
-        for (int i = 0; i<2; i++){
+    private static void playGame(Player[] players, int amountRounds) {
+        System.out.println("Welcome to this game of Yahtzee!");
+        for (int i = 0; i<amountRounds; i++){
             System.out.println("Ronde " + (i + 1));
             for (Player aPlayer: players) {
                 doPlayerRound(aPlayer);
@@ -57,7 +69,7 @@ public class YahtzeeGame {
     }
 
     //find a way to remove the strings from here
-    public static void doPlayerRound(Player aPlayer) {
+    private static void doPlayerRound(Player aPlayer) {
         System.out.println("The round of player: "+ (aPlayer.name));
         ArrayList<Integer> savedDice = new ArrayList();
         int roleAmount = 5;
@@ -66,24 +78,15 @@ public class YahtzeeGame {
             
             switch (dice_throw) {
                 case 0 -> {
-                    String textGui = "You have thrown: " + 
-                rollResult.toString() + " which dice would you like to save?" +
-                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+                    String textGui = textGui(0, rollResult, savedDice);
                     savedDice.addAll(chooseDice(textGui,rollResult));
                     roleAmount -= savedDice.size();
                 }
                 case 1 -> {
                     if (roleAmount != 0){
-                        String textGui = "You have thrown: " + 
-                                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
-                                + "\n Which dice do you want to keep?" +
-                                 "\n\nExample -++-- only keeps dice 2 and 3 while "
-                                + "it would thrown dice 1, 4 and 5 again.";
+                        String textGui = textGui(1, rollResult, savedDice);
                         savedDice.addAll(chooseDice(textGui, rollResult));
-                        textGui = "You have saved these dice in round 1 and 2: " + 
-                            savedDice.toString() + " which dice would you like to role again?" +
-                            "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
-                        savedDice = chooseDice(textGui, savedDice);
+                        savedDice = chooseDice(textGui(2,rollResult,savedDice), savedDice);
                         roleAmount = 5 - savedDice.size();
                     }
                 }
@@ -126,6 +129,21 @@ public class YahtzeeGame {
         }
         return answer;
     }
+    
+    private static String textGui(int i, ArrayList<Integer> rollResult, ArrayList<Integer> savedDice) {
+        String[] textsGui =  new String[3];
+        textsGui[0] = "You have thrown: " + 
+                rollResult.toString() + " which dice would you like to save?" +
+                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+        textsGui[1] = "You have thrown: " + 
+                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
+                + "\n Which dice do you want to keep?" + "\n\nExample -++-- only keeps dice 2 and 3 while "
+                + "it would thrown dice 1, 4 and 5 again.";
+        textsGui[2] =  "You have saved these dice in round 1 and 2: " + 
+                savedDice.toString() + " which dice would you like to role again?" +
+                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";       
+        return textsGui[i];
+    }
 
     //clean up method
     private static void determineWinner(Player[] players) {
@@ -135,7 +153,21 @@ public class YahtzeeGame {
             int playerScore = aPlayer.scoreCard.getTotalScore();
             playerScores.put("" + aPlayer.name, playerScore);
         }
+        int winnerScore = determineMaxScore(playerScores);
         
+        System.out.println("This is the end of the game.");
+        System.out.println("The winner(-s) is/are: ");
+        for(String aPlayer : playerScores.keySet()) {
+            if (playerScores.get(aPlayer) == winnerScore){
+                System.out.println("Player " + aPlayer + "!");
+            }
+        }
+        System.out.println("With " + winnerScore + " points :D");
+        System.out.println("Thank you for playing.");
+    }
+
+        
+    private static int determineMaxScore(HashMap<String, Integer> playerScores){
         String previousPlayer = null;
         int winnerScore = 0;
         for(String key : playerScores.keySet()) {
@@ -149,17 +181,8 @@ public class YahtzeeGame {
                 winnerScore = playerScore;
             }
         }
-        
-        System.out.println("This is the end of the game.");
-        System.out.println("The winner(-s) is/are: ");
-        for(String key : playerScores.keySet()) {
-            if (playerScores.get(key) == winnerScore){
-                System.out.println("Player " + key + "!");
-            }
-        }
-        System.out.println("With " + winnerScore + " points :D");
-        System.out.println("Thank you for playing.");
-    }
+        return winnerScore;
+    } 
 }
 
     
