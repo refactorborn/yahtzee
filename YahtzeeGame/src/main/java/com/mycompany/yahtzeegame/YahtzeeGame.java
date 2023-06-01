@@ -5,6 +5,7 @@
 package com.mycompany.yahtzeegame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 /**
@@ -45,14 +46,16 @@ public class YahtzeeGame {
     }
 
     public static void playGame(Player[] players) {
-        for (int i = 0; i<13; i++){
+        for (int i = 0; i<1; i++){
             System.out.println("Ronde " + (i + 1));
             for (Player aPlayer: players) {
                 doPlayerRound(aPlayer);
             }
-        } 
+        }
+        determineWinner(players);
     }
 
+    //find a way to remove the strings from here
     public static void doPlayerRound(Player aPlayer) {
         System.out.println("The round of player: "+ (aPlayer.name));
         ArrayList<Integer> savedDice = new ArrayList();
@@ -70,14 +73,14 @@ public class YahtzeeGame {
                 }
                 case 1 -> {
                     String textGui = "You have thrown: " + 
-                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
+                            rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
                             + "\n Which dice do you want to keep?" +
                              "\n\nExample -++-- only keeps dice 2 and 3 while "
                             + "it would thrown dice 1, 4 and 5 again.";
                     savedDice.addAll(chooseDice(textGui, rollResult));
                     textGui = "You have saved these dice in round 1 and 2: " + 
-                savedDice.toString() + " which dice would you like to role again?" +
-                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
+                        savedDice.toString() + " which dice would you like to role again?" +
+                        "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
                     savedDice = chooseDice(textGui, savedDice);
                     roleAmount = 5 - savedDice.size();
                 }
@@ -119,6 +122,40 @@ public class YahtzeeGame {
             return diceChooserGUI(textGui,diceThrow);
         }
         return answer;
+    }
+
+    //clean up method
+    private static void determineWinner(Player[] players) {
+        HashMap<String, Integer> playerScores = new HashMap<>();
+        for (Player aPlayer : players){
+            aPlayer.scoreCard.calculateTotalScores();
+            int playerScore = aPlayer.scoreCard.getTotalScore();
+            playerScores.put("" + aPlayer.name, playerScore);
+        }
+        
+        String previousPlayer = null;
+        int winnerScore = 0;
+        for(String key : playerScores.keySet()) {
+            int playerScore = playerScores.get(key);
+            if (previousPlayer == null){
+                previousPlayer = key;
+                winnerScore = playerScore;
+            }
+            else if (playerScore > playerScores.get(previousPlayer)){
+                previousPlayer = key;
+                winnerScore = playerScore;
+            }
+        }
+        
+        System.out.println("This is the end of the game.");
+        System.out.println("The winner(-s) is/are: ");
+        for(String key : playerScores.keySet()) {
+            if (playerScores.get(key) == winnerScore){
+                System.out.println("Player " + key + "!");
+            }
+        }
+        System.out.println("With " + winnerScore + " points :D");
+        System.out.println("Thank you for playing.");
     }
 }
 

@@ -133,6 +133,7 @@ public class ScoreCard {
             return null;
         }  // Als op cancel gedrukt is: stoppen.
         else if (s.length() != possibleScorefields.size()){
+            System.out.println("length answer does not equal the amount of dice rolled");
             return inputChooseScoreGUI(finalDiceRound, possibleScorefields);
         }
         return s;
@@ -167,4 +168,14 @@ public class ScoreCard {
         }
         return null;
     }
+    public void calculateTotalScores() {
+        int scoreTotal = 0;
+        for(ScoreField field : ScoreField.values())
+            if(getScore(field) != -1){
+                scoreTotal += getScore(field);
+                setTotalScore(scoreTotal);
+                }
+        
+    }
+
 }
