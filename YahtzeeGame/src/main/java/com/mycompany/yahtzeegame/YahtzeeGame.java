@@ -116,10 +116,15 @@ public class YahtzeeGame {
         for (int i = 0; i<dice.size();i++){
             if (diceArray[i] == '+'){
                 roundResults.add(dice.get(i));
-            } 
+            }
+        }
+        if (roundResults.isEmpty()) {
+            System.out.println("Please select at least one dice.");
+            return chooseDice(textGui, dice);
         }
         return roundResults;
     }
+    
         private static String diceChooserGUI(String textGui, ArrayList<Integer> diceThrow){
         String answer = JOptionPane.showInputDialog(textGui);
         if (answer == null) return null;
@@ -132,16 +137,16 @@ public class YahtzeeGame {
     
     private static String textGui(int i, ArrayList<Integer> rollResult, ArrayList<Integer> savedDice) {
         String[] textsGui =  new String[3];
-        textsGui[0] = "You have thrown: " + 
+        textsGui[0] = "You have rolled: " + 
                 rollResult.toString() + " which dice would you like to save?" +
-                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";
-        textsGui[1] = "You have thrown: " + 
-                rollResult.toString() + ".\nLast round you have thrown: " + savedDice.toString() + "."
+                "\n\nExample -++-- only keeps dice 2 and 3 while it will roll dice 1, 4 and 5 again.";
+        textsGui[1] = "You have rolled: " + 
+                rollResult.toString() + ".\nLast round you have rolled: " + savedDice.toString() + "."
                 + "\n Which dice do you want to keep?" + "\n\nExample -++-- only keeps dice 2 and 3 while "
-                + "it would thrown dice 1, 4 and 5 again.";
+                + "it will roll dice 1, 4 and 5 again.";
         textsGui[2] =  "You have saved these dice in round 1 and 2: " + 
-                savedDice.toString() + " which dice would you like to role again?" +
-                "\n\nExample -++-- only keeps dice 2 and 3 while it would thrown dice 1, 4 and 5 again.";       
+                savedDice.toString() + " which dice would you like to roll again?" +
+                "\n\nExample -++-- only keeps dice 2 and 3, while it will roll dice 1, 4 and 5 again.";       
         return textsGui[i];
     }
 

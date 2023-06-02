@@ -130,7 +130,7 @@ public class ScoreCard {
         String scoreInput = inputChooseScoreGUI(finalDiceRound, possibleScorefields);
         char[] ca = scoreInput.toCharArray();
         int numPlusses = 0;
-        String fields = null;
+        String fieldChoice = null;
         for (int i = 0; i<ca.length;i++){
             if (ca[i] == '+'){
                 numPlusses += 1;
@@ -139,10 +139,14 @@ public class ScoreCard {
                     System.out.println("Please choose one.");
                     return makeChoice(finalDiceRound, possibleScorefields);
                 }
-                fields = possibleScorefields.get(i);
+                fieldChoice = possibleScorefields.get(i);
             } 
         }
-        return fields;
+        if (fieldChoice == null){
+            System.out.println("Please choose at least one scorefield.");
+            makeChoice(finalDiceRound,possibleScorefields);
+        }
+        return fieldChoice;
     }
 
     //add sout for the else if and check +-'s
@@ -162,10 +166,8 @@ public class ScoreCard {
     private void appendScoreCard(String stringField) {
         String[] stringFieldSplit = stringField.strip().split(":");
         ScoreField field = getScoreFieldFromString(stringFieldSplit[0]);
-        if (field != null) {
-            int i = Integer.parseInt(stringFieldSplit[1]);
-            setScore(field, i);
-        }
+        int i = Integer.parseInt(stringFieldSplit[1]);
+        setScore(field, i);
     }
 
     private ScoreField getScoreFieldFromString(String fieldString) {
